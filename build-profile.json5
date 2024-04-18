@@ -1,0 +1,79 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.cer",
+          "storePassword": "0000001B7652DD608BA9A1841F771F01494C47E4A0F34AFB5F445FA9E68486580FB72B6B337C5265A74822",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BF5D5760AA69A5644BB800165FF6C6389F26EB9E70CF5FA170B084D5C0C54981B27AADA4975EC0A",
+          "profile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.p12"
+        }
+      },
+      {
+        "name": "debug",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.cer",
+          "storePassword": "0000001B46683EF6A9AF77B249C00DA9D118AE9B9095BE8466978C03F63FE08FA32E53EAF612131CADE3F2",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B5803C5929845499F45B9ABB90AFF63127BB2E95D58B97F904EEBD06B7EC3A860EEDF6FA36B753C",
+          "profile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_30086000597306488.p12"
+        }
+      },
+      {
+        "name": "debug2",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_39070068.cer",
+          "storePassword": "0000001AEAE3FF77AB1CEE2F87D902A4D05E4354C95731461CCA0F00F5EB1F3C2953E3230CC9EFE64F42",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001AEF91DB9782672891EB00043EE97C93089ED44BC7F1A7386F65A748E628C8F7A8B4614D0E5FED",
+          "profile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_39070068.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/gordon/.ohos/config/auto_debug_aliyun_log_harmony_sdk_com.aliyun.sls.harmony_39070068.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "debug2",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lib_producer",
+      "srcPath": "./lib_producer",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

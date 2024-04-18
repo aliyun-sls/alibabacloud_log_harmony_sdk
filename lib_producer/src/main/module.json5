@@ -1,0 +1,13 @@
+{
+  "module": {
+    "name": "lib_producer",
+    "type": "har",
+    "description": "$string:producer_desc",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+//    "deliveryWithInstall": true,
+//    "pages": "$profile:main_pages"
+  }
+}

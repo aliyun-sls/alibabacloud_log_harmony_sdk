@@ -1,0 +1,6 @@
+{
+  "name": "libaliyunlog.so",
+  "types": "./index.d.ts",
+  "version": "",
+  "description": "Aliyun log c sdk for HarmonyOS."
+}
