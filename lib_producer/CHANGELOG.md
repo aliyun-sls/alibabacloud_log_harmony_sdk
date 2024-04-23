@@ -1,3 +1,8 @@
+## 0.3.0
+### Fixes
+* Fix crashed while no network connection
+* Fix mem leak
+
 ## 0.2.0
 ### Features
 * Add setTopic/setSource/addTag options support.
