@@ -137,6 +137,14 @@ int napi_os_http_function(const char *url, char ***header_array, int header_coun
     }
     curl_easy_setopt(curl, CURLOPT_URL, url);
     
+    size_t request_id_len = sizeof(char) * 256;
+    http_response->requestID = (char*) malloc(request_id_len);
+    memset(http_response->requestID, 0, request_id_len);
+    
+    size_t error_message_len = sizeof(char) * 256;
+    http_response->errorMessage = (char*) malloc(error_message_len);
+    memset(http_response->errorMessage, 0, error_message_len);
+    
     // headers
     struct curl_slist *headers = NULL;
     char ** original_header_array = *header_array;
@@ -175,7 +183,7 @@ int napi_os_http_function(const char *url, char ***header_array, int header_coun
     curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_IGNORED);
     
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "aliyun-log-openharmony/1.0.0");
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "aliyun-log-openharmony/0.3.0");
     
     // timeout: 20
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 20);
@@ -218,19 +226,19 @@ int napi_os_http_function(const char *url, char ***header_array, int header_coun
             body = log_sdscpy(body, curl_easy_strerror(res));
         }
         http_response->statusCode = -1 * (int)res;
+        strncpy(http_response->errorMessage, body, error_message_len);
     }
     
     if (log_sdslen(header) > 0)
     {
-        http_response->requestID = header;
+        strncpy(http_response->requestID, header, request_id_len);
     }
     else
     {
         log_sdsfree(header);
         header = NULL;
-        http_response->requestID = log_sdsnew("");
+        strcpy(http_response->requestID, "");
     }
-    http_response->errorMessage = body;
 
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);

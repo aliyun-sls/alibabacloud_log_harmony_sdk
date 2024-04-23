@@ -6,10 +6,6 @@
 #include <assert.h>
 #include "inner_log.h"
 
-#ifdef LOG_C_ENABLE_ZSTD
-#include "log_zstd.h"
-#endif
-
 // 1+3( 1 --->  header;  2 ---> 128 * 128 = 16KB)
 #define INIT_LOG_SIZE_BYTES 3
 
@@ -723,15 +719,9 @@ lz4_log_buf* serialize_to_proto_buf_with_malloc_lz4(log_group_builder* bder)
     //fwrite(log->buffer, 1, length, pFile);
     //fclose(pFile);
     // @debug end
-#ifdef LOG_C_ENABLE_ZSTD
-    size_t const compress_bound = LOG_ZSTD_compressBound(length);
-    char *compress_data = (char *)malloc(compress_bound);
-    size_t const compressed_size = LOG_ZSTD_compress(compress_data, compress_bound, (char *)log->buffer, length, 1);
-#else
     int compress_bound = LOG_LZ4_compressBound(length);
     char *compress_data = (char *)malloc(compress_bound);
     int compressed_size = LOG_LZ4_compress_default((char *)log->buffer, compress_data, length, compress_bound);
-#endif
     if(compressed_size <= 0)
     {
         free(compress_data);

@@ -12,7 +12,7 @@
   "name": "@aliyunsls/producer",
   "description": "Aliyun log producer for HarmonyOS.",
   "main": "./src/main/ets/Index.ets",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://help.aliyun.com/zh/sls/getting-started",
   "dependencies": {}
 }

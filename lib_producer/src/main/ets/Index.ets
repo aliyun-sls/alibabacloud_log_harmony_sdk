@@ -32,9 +32,9 @@ class AliyunLog {
     let keyValues: string[] = new Array(len * 2);
     let index = 0;
 
-    for (let [key, value] of log.entries()) {
-      keyValues[index * 2] = key;
-      keyValues[index * 2 + 1] = value;
+    for (let entry of log.entries()) {
+      keyValues[index * 2] = entry[0];
+      keyValues[index * 2 + 1] = entry[1];
       index++;
     }
 

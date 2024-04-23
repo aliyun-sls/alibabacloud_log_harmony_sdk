@@ -6,15 +6,10 @@
 #include "log_api.h"
 #include "log_producer_manager.h"
 #include "inner_log.h"
-#ifdef LOG_C_ENABLE_ZSTD
-#include "log_zstd.h"
-#else
 #include "log_lz4.h"
-#endif
 #include "log_sds.h"
 #include <stdlib.h>
 #include <string.h>
-
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -58,13 +53,7 @@ void pb_to_webtracking(lz4_log_buf *lz4_buf, lz4_log_buf **new_lz4_buf)
 {
     aos_debug_log("[sender] pb_to_webtracking start.");
     char * buf = (char *)malloc(lz4_buf->raw_length);
-#ifdef LOG_C_ENABLE_ZSTD
-    unsigned long long d_size = LOG_ZSTD_getFrameContentSize(lz4_buf->data, lz4_buf->length);
-    size_t rst = LOG_ZSTD_decompress(buf, d_size, lz4_buf->data, lz4_buf->length);
-#else
-    int rst = LOG_LZ4_decompress_safe((const char* )lz4_buf->data, buf, lz4_buf->length, lz4_buf->raw_length);
-#endif
-    if (rst <= 0)
+    if (LOG_LZ4_decompress_safe((const char* )lz4_buf->data, buf, lz4_buf->length, lz4_buf->raw_length) <= 0)
     {
         free(buf);
         aos_fatal_log("[sender] pb_to_webtracking, LOG_LZ4_decompress_safe error");
@@ -72,15 +61,10 @@ void pb_to_webtracking(lz4_log_buf *lz4_buf, lz4_log_buf **new_lz4_buf)
     }
 
     size_t len = serialize_pb_buffer_to_webtracking(buf, lz4_buf->raw_length, &buf);
-#ifdef LOG_C_ENABLE_ZSTD
-    size_t const compress_bound = LOG_ZSTD_compressBound(len);
-    char *compress_data = (char *)malloc(compress_bound);
-    size_t const compressed_size = LOG_ZSTD_compress(compress_data, compress_bound, buf, len, 1);
-#else
+
     int compress_bound = LOG_LZ4_compressBound(len);
     char *compress_data = (char *)malloc(compress_bound);
     int compressed_size = LOG_LZ4_compress_default((char *)buf, compress_data, len, compress_bound);
-#endif
     if(compressed_size <= 0)
     {
         aos_fatal_log("[sender] pb_to_webtracking, LOG_LZ4_compress_default error");
@@ -101,13 +85,7 @@ void _rebuild_time(lz4_log_buf * lz4_buf, lz4_log_buf ** new_lz4_buf)
 {
     aos_debug_log("[sender] rebuild log.");
     char * buf = (char *)malloc(lz4_buf->raw_length);
-#ifdef LOG_C_ENABLE_ZSTD
-    unsigned long long d_size = LOG_ZSTD_getFrameContentSize(lz4_buf->data, lz4_buf->length);
-    size_t rst = LOG_ZSTD_decompress(buf, d_size, lz4_buf->data, lz4_buf->length);
-#else
-    int rst = LOG_LZ4_decompress_safe((const char* )lz4_buf->data, buf, lz4_buf->length, lz4_buf->raw_length);
-#endif
-    if ( rst <= 0)
+    if (LOG_LZ4_decompress_safe((const char* )lz4_buf->data, buf, lz4_buf->length, lz4_buf->raw_length) <= 0)
     {
         free(buf);
         aos_fatal_log("[sender] LOG_LZ4_decompress_safe error");
@@ -116,15 +94,9 @@ void _rebuild_time(lz4_log_buf * lz4_buf, lz4_log_buf ** new_lz4_buf)
     uint32_t nowTime = LOG_GET_TIME();
     fix_log_group_time(buf, lz4_buf->raw_length, nowTime);
 
-#ifdef LOG_C_ENABLE_ZSTD
-    size_t const compress_bound = LOG_ZSTD_compressBound(lz4_buf->raw_length);
-    char *compress_data = (char *)malloc(compress_bound);
-    size_t const compressed_size = LOG_ZSTD_compress(compress_data, compress_bound, buf, lz4_buf->raw_length, 1);
-#else
     int compress_bound = LOG_LZ4_compressBound(lz4_buf->raw_length);
     char *compress_data = (char *)malloc(compress_bound);
     int compressed_size = LOG_LZ4_compress_default((char *)buf, compress_data, lz4_buf->raw_length, compress_bound);
-#endif
     if(compressed_size <= 0)
     {
         aos_fatal_log("[sender] LOG_LZ4_compress_default error");
@@ -223,10 +195,7 @@ void * log_producer_send_fun(void * param)
         lz4_log_buf * send_buf = send_param->log_buf;
 #ifdef SEND_TIME_INVALID_FIX
         uint32_t nowTime = LOG_GET_TIME();
-        if (((nowTime >= send_param->builder_time) && (nowTime - send_param->builder_time > 600)) ||
-            // if uint32_t - uint32_t < 0, the result is a big int
-            ((nowTime < send_param->builder_time) && (UINT32_MAX - send_param->builder_time + nowTime + 1 > 600)) ||
-            (error_info.last_send_error == LOG_SEND_TIME_ERROR))
+        if (nowTime - send_param->builder_time > 600 || send_param->builder_time - nowTime > 600 || error_info.last_send_error == LOG_SEND_TIME_ERROR)
         {
             _rebuild_time(send_param->log_buf, &send_buf);
             send_param->builder_time = nowTime;

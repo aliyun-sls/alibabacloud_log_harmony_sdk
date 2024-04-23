@@ -16,7 +16,7 @@ unsigned int LOG_GET_TIME();
 void log_http_inject_headers(log_producer_config *config, char **src_headers, int src_count, char **dest_headers, int *dest_count);
 void log_http_release_inject_headers(log_producer_config *config, char **dest_headers, int dest_count);
 
-log_status_t sls_log_init()
+log_status_t sls_log_init(int32_t log_global_flag)
 {
 #if 0
     CURLcode ecode;
@@ -618,10 +618,6 @@ post_log_result * post_logs_from_lz4buf_with_config(log_producer_config *config,
 //        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, (void *)buffer->data);
 //        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, buffer->length);
 
-
-        log_sds req = log_sdsnewEmpty(64);
-        log_sds err = log_sdsnew("n/a");
-
         const int max_header_count = 50;
         char *header_array[max_header_count];
         int header_count = 0;
@@ -639,6 +635,7 @@ post_log_result * post_logs_from_lz4buf_with_config(log_producer_config *config,
         log_http_inject_headers(config, header_array, header_count, dest_header_array, dest_count);
         char **final_header_array = (*dest_count) == 0 ? header_array : dest_header_array;
         int final_header_count = (*dest_count) == 0 ? header_count : (*dest_count);
+
         post_log_result *http_response = (post_log_result*) malloc(sizeof(post_log_result));
         int res = LOG_OS_HttpPost(url, &final_header_array, final_header_count, (const void *) buffer->data, buffer->length, http_response);
         log_http_release_inject_headers(config, dest_header_array, *dest_count);
@@ -717,9 +714,6 @@ post_log_result * post_logs_from_lz4buf_webtracking(const char *endpoint, const 
         log_sds headerRawLen = log_sdsnewEmpty(64);
         headerRawLen = log_sdscatprintf(headerRawLen, "x-log-bodyrawsize:%d", (int)buffer->raw_length);
         headers=cur_slist_append(headers, headerRawLen);
-
-        log_sds req = log_sdsnewEmpty(64);
-        log_sds err = log_sdsnew("n/a");
 
         const int max_header_count = 50;
         char *header_array[max_header_count];
