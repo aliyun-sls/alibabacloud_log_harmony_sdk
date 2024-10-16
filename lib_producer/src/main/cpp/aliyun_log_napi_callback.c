@@ -101,8 +101,16 @@ void aliyun_log_napi_send_done_function(
 {
     struct uv_loop_s *loop = NULL;
     napi_get_uv_event_loop(callback_ref->env, &loop);
+    if (NULL == loop)
+    {
+        return;
+    }
 
     work_data *data = (work_data *)malloc(sizeof(work_data));
+    if (NULL == data)
+    {
+        return;
+    }
     data->logstore_name = strdup(config_name);
     data->result_code = result;
     data->log_byte = log_byte;
@@ -111,6 +119,10 @@ void aliyun_log_napi_send_done_function(
     data->user_param = user_param;
 
     uv_work_t *work = (uv_work_t *)malloc((sizeof(uv_work_t)));
+    if (NULL == work)
+    {
+        return;
+    }
     work->data = (void *)data;
 
     uv_queue_work(
