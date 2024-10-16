@@ -1,3 +1,7 @@
+## 0.3.1
+### Fixes
+* Try to fix the null pointer dereference crash
+
 ## 0.3.0
 ### Fixes
 * Fix crashed while no network connection
