@@ -135,14 +135,26 @@ int napi_os_http_function(const char *url, char ***header_array, int header_coun
     {
         return -1;
     }
-    curl_easy_setopt(curl, CURLOPT_URL, url);
+    CURLcode ret = curl_easy_setopt(curl, CURLOPT_URL, url);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
     size_t request_id_len = sizeof(char) * 256;
     http_response->requestID = (char*) malloc(request_id_len);
+    if (!http_response->requestID)
+    {
+        return -1;
+    }
     memset(http_response->requestID, 0, request_id_len);
     
     size_t error_message_len = sizeof(char) * 256;
     http_response->errorMessage = (char*) malloc(error_message_len);
+    if (!http_response->errorMessage)
+    {
+        return -1;
+    }
     memset(http_response->errorMessage, 0, error_message_len);
     
     // headers
@@ -167,39 +179,115 @@ int napi_os_http_function(const char *url, char ***header_array, int header_coun
         }
     }
     
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, NULL);
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    ret = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, NULL);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     // post method
-    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    ret = curl_easy_setopt(curl, CURLOPT_POST, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
     // post body
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, (void *)data);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data_len);
+    ret = curl_easy_setopt(curl, CURLOPT_POSTFIELDS, (void *)data);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data_len);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
-    curl_easy_setopt(curl, CURLOPT_FILETIME, 1);
-    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
-    curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);
-    curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_IGNORED);
+    ret = curl_easy_setopt(curl, CURLOPT_FILETIME, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_IGNORED);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, "aliyun-log-openharmony/0.3.0");
+    ret = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_USERAGENT, "aliyun-log-openharmony/0.3.0");
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
     // timeout: 20
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 20);
+    ret = curl_easy_setopt(curl, CURLOPT_TIMEOUT, 20);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
     log_sds header = log_sdsnewEmpty(64);
     char* body = NULL;
     
-    curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header);
-    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
+    ret = curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_callback);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
 
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &body);
+    ret = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &body);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
     
     // enable debug info 
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-    curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, debug_callback);
+    ret = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
+    ret = curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, debug_callback);
+    if (CURLE_OK != ret)
+    {
+        return -1;
+    }
 
     CURLcode res = curl_easy_perform(curl);
     long http_code;
