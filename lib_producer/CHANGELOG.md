@@ -1,3 +1,7 @@
+## 0.3.2
+### Fixes
+* Try to fix curl 43 error
+
 ## 0.3.1
 ### Fixes
 * Try to fix the null pointer dereference crash
