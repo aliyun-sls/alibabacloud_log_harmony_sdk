@@ -9,7 +9,7 @@
   "name": "@aliyunsls/producer",
   "description": "Aliyun log producer for HarmonyOS.",
   "main": "./src/main/ets/Index.ets",
-  "version": "0.3.3-beta.1",
+  "version": "0.3.3",
   "homepage": "https://help.aliyun.com/zh/sls/getting-started",
   "dependencies": {
     "libaliyunlog.so": "file:./src/main/cpp/types/libaliyunlog"

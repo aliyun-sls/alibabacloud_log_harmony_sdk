@@ -1,3 +1,4 @@
+## 0.3.3
 ## 0.3.3-beta.1
 ### Fixes
 * Removed armv7a support
