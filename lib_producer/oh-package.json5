@@ -1,8 +1,5 @@
 {
   "license": "MIT",
-  "devDependencies": {
-    "@types/libaliyunlog.so": "file:./src/main/cpp/types/libaliyunlog"
-  },
   "keywords": [
     "Aliyun",
     "SLS",
@@ -12,7 +9,9 @@
   "name": "@aliyunsls/producer",
   "description": "Aliyun log producer for HarmonyOS.",
   "main": "./src/main/ets/Index.ets",
-  "version": "0.3.2",
+  "version": "0.3.3-beta.1",
   "homepage": "https://help.aliyun.com/zh/sls/getting-started",
-  "dependencies": {}
+  "dependencies": {
+    "libaliyunlog.so": "file:./src/main/cpp/types/libaliyunlog"
+  }
 }

@@ -1,22 +1,20 @@
 
 #include "napi/native_api.h"
 #include "aliyun_log.h"
-#include <cstdlib>
+#include <stdlib.h>
 #include <time.h>
 #include "uv.h"
-extern "C" {
 #include "aliyun_log_napi_utils.h"
 #include "aliyun_log_harmony_http_function.h"
 #include "aliyun_log_napi_callback.h"
 #include "curl/curl.h"
-}
 
 static void _napi_get_value_string(napi_env env, napi_value arg, char** dest)
 {
     size_t size = 0;
-    napi_get_value_string_utf8(env, arg, nullptr, 0, &size);
+    napi_get_value_string_utf8(env, arg, NULL, 0, &size);
     if (size <= 0) {
-        *dest = nullptr;
+        *dest = NULL;
         return;
     }
     
@@ -29,13 +27,13 @@ static napi_value create_instance(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 6;
     size_t argc = 6;
-    napi_value args[6] = {nullptr};
+    napi_value args[6] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 6 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 6 arguments are expected.");    
+        return NULL;
     }
     
     char* endpoint;
@@ -93,7 +91,7 @@ static napi_value create_instance(napi_env env, napi_callback_info info)
         free(access_key_token);
     }
     
-    napi_value token = nullptr;
+    napi_value token = NULL;
     napi_status status = napi_create_external(env, aliyun, NULL, NULL, &token);
     if (napi_ok != status)
     {
@@ -107,20 +105,20 @@ static napi_value destroy_instance(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 1;
     size_t argc = 1;
-    napi_value args[1] = {nullptr};
+    napi_value args[1] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 1 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 1 arguments are expected.");    
+        return NULL;
     }
     
     void *token;
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
         return NULL;
     }
     
@@ -137,13 +135,13 @@ static napi_value add_log(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 3;
     size_t argc = 3;
-    napi_value args[3] = {nullptr};
+    napi_value args[3] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 3 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 3 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -151,8 +149,8 @@ static napi_value add_log(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
@@ -161,8 +159,8 @@ static napi_value add_log(napi_env env, napi_callback_info info)
     status = napi_get_value_uint32(env, args[1], &length);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get log array length");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get log array length");
+        return NULL;
     }
     
     // make K-V array.the K-V length = pari count * 2
@@ -174,24 +172,24 @@ static napi_value add_log(napi_env env, napi_callback_info info)
         status = napi_get_element(env, args[2], i * 2, &element);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get array element");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get array element");
+            return NULL;
         }
         
         size_t str_len;
-        status = napi_get_value_string_utf8(env, element, nullptr, 0, &str_len);
+        status = napi_get_value_string_utf8(env, element, NULL, 0, &str_len);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get string length");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get string length");
+            return NULL;
         }
         
         char* key = (char*)malloc(str_len + 1);
         status = napi_get_value_string_utf8(env, element, key, str_len + 1, &str_len);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get string");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get string");
+            return NULL;
         }
         key_values[i * 2] = key;
         
@@ -199,23 +197,23 @@ static napi_value add_log(napi_env env, napi_callback_info info)
         status = napi_get_element(env, args[2], i * 2 + 1, &element);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get array element");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get array element");
+            return NULL;
         }
         
-        status = napi_get_value_string_utf8(env, element, nullptr, 0, &str_len);
+        status = napi_get_value_string_utf8(env, element, NULL, 0, &str_len);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get string length");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get string length");
+            return NULL;
         }
         
         char* value = (char*)malloc(str_len + 1);
         status = napi_get_value_string_utf8(env, element, value, str_len + 1, &str_len);
         if (napi_ok != status)
         {
-            napi_throw_error(env, nullptr, "Failed to get string");
-            return nullptr;
+            napi_throw_error(env, NULL, "Failed to get string");
+            return NULL;
         }
         key_values[i * 2 + 1] = value;
     }
@@ -233,8 +231,8 @@ static napi_value add_log(napi_env env, napi_callback_info info)
     status = napi_create_uint32(env, ret, &result);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to create result");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to create result");
+        return NULL;
     }
     return result;
 }
@@ -248,13 +246,13 @@ static napi_value set_accesskey(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 4;
     size_t argc = 4;
-    napi_value args[4] = {nullptr};
+    napi_value args[4] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 3 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 3 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -262,8 +260,8 @@ static napi_value set_accesskey(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
@@ -277,20 +275,20 @@ static napi_value set_accesskey(napi_env env, napi_callback_info info)
     
     aliyun_log_set_accesskey(aliyun, access_key_id, access_key_secret, access_key_token);
     
-    return nullptr;
+    return NULL;
 }
 
 static napi_value set_topic(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 2;
     size_t argc = 2;
-    napi_value args[2] = {nullptr};
+    napi_value args[2] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 2 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 2 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -298,32 +296,32 @@ static napi_value set_topic(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
     char* topic;
     _napi_get_value_string(env, args[1], &topic);
     if (NULL == topic) {
-        return nullptr;
+        return NULL;
     }
     
     aliyun_log_set_topic(aliyun, topic);
     
-    return nullptr;
+    return NULL;
 }
 static napi_value set_source(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 2;
     size_t argc = 2;
-    napi_value args[2] = {nullptr};
+    napi_value args[2] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 2 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 2 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -331,32 +329,32 @@ static napi_value set_source(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
     char* source;
     _napi_get_value_string(env, args[1], &source);
     if (NULL == source) {
-        return nullptr;
+        return NULL;
     }
     
     aliyun_log_set_source(aliyun, source);
     
-    return nullptr;
+    return NULL;
 }
 static napi_value add_tag(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 3;
     size_t argc = 3;
-    napi_value args[3] = {nullptr};
+    napi_value args[3] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 3 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 3 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -364,8 +362,8 @@ static napi_value add_tag(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
@@ -374,24 +372,24 @@ static napi_value add_tag(napi_env env, napi_callback_info info)
     _napi_get_value_string(env, args[1], &tag_key);
     _napi_get_value_string(env, args[2], &tag_value);
     if (NULL == tag_key || NULL == tag_value) {
-        return nullptr;
+        return NULL;
     }
     
     aliyun_log_add_tag(aliyun, tag_key, tag_value);
     
-    return nullptr;
+    return NULL;
 }
 static napi_value debuggable(napi_env env, napi_callback_info info)
 {
     size_t requireArgc = 2;
     size_t argc = 2;
-    napi_value args[2] = {nullptr};
+    napi_value args[2] = {NULL};
     
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     if (argc < requireArgc)
     {
-        napi_throw_error(env, nullptr, "Wrong arguments. 2 arguments are expected.");    
-        return nullptr;
+        napi_throw_error(env, NULL, "Wrong arguments. 2 arguments are expected.");    
+        return NULL;
     }
     
     // get the aliyun_log* pointer
@@ -399,8 +397,8 @@ static napi_value debuggable(napi_env env, napi_callback_info info)
     napi_status status = napi_get_value_external(env, args[0], &token);
     if (napi_ok != status)
     {
-        napi_throw_error(env, nullptr, "Failed to get aliyun_log pointer");
-        return nullptr;
+        napi_throw_error(env, NULL, "Failed to get aliyun_log pointer");
+        return NULL;
     }
     aliyun_log *aliyun = (aliyun_log*)token;
     
@@ -408,46 +406,44 @@ static napi_value debuggable(napi_env env, napi_callback_info info)
     status = napi_get_value_int32(env, args[1], &debuggable);
     
     if (NULL == debuggable) {
-        return nullptr;
+        return NULL;
     }
     
     aliyun_log_debuggable(aliyun, debuggable);
     
-    return nullptr;
+    return NULL;
 }
 
-EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
-        { "createInstance", nullptr, create_instance, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "destroyInstance", nullptr, destroy_instance, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "addLog", nullptr, add_log, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "setLogCallback", nullptr, set_log_callback, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "setAccessKey", nullptr, set_accesskey, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "setTopic", nullptr, set_topic, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "setSource", nullptr, set_source, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "addTag", nullptr, add_tag, nullptr, nullptr, nullptr, napi_default, nullptr},
-        { "debuggable", nullptr, debuggable, nullptr, nullptr, nullptr, napi_default, nullptr},
+        { "createInstance", NULL, create_instance, NULL, NULL, NULL, napi_default, NULL},
+        { "destroyInstance", NULL, destroy_instance, NULL, NULL, NULL, napi_default, NULL},
+        { "addLog", NULL, add_log, NULL, NULL, NULL, napi_default, NULL},
+        { "setLogCallback", NULL, set_log_callback, NULL, NULL, NULL, napi_default, NULL},
+        { "setAccessKey", NULL, set_accesskey, NULL, NULL, NULL, napi_default, NULL},
+        { "setTopic", NULL, set_topic, NULL, NULL, NULL, napi_default, NULL},
+        { "setSource", NULL, set_source, NULL, NULL, NULL, napi_default, NULL},
+        { "addTag", NULL, add_tag, NULL, NULL, NULL, napi_default, NULL},
+        { "debuggable", NULL, debuggable, NULL, NULL, NULL, napi_default, NULL},
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
 
     aliyun_log_set_os_http_function(napi_os_http_function);
     return exports;
 }
-EXTERN_C_END
 
 static napi_module demoModule = {
     .nm_version =1,
     .nm_flags = 0,
-    .nm_filename = nullptr,
+    .nm_filename = NULL,
     .nm_register_func = Init,
     .nm_modname = "library",
     .nm_priv = ((void*)0),
     .reserved = { 0 },
 };
 
-extern "C" __attribute__((constructor)) void RegisterAliyun_log_harmony_sdkModule(void)
+__attribute__((constructor)) void RegisterAliyun_log_harmony_sdkModule(void)
 {
     napi_module_register(&demoModule);
 }
