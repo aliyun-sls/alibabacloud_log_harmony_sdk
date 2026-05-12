@@ -4,8 +4,10 @@
     "type": "har",
     "description": "$string:producer_desc",
     "deviceTypes": [
+      "default",
       "phone",
-      "tablet"
+      "tablet",
+      "2in1"
     ],
 //    "deliveryWithInstall": true,
 //    "pages": "$profile:main_pages"

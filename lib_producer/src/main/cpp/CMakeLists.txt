@@ -1,6 +1,6 @@
 # the minimum version of CMake.
 cmake_minimum_required(VERSION 3.4.1)
-project(aliyunlogsdk)
+project(aliyunlogsdk C)
 
 set(NATIVERENDER_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 add_definitions(-DHarmonyOS)
@@ -19,7 +19,7 @@ add_library(aliyunlog SHARED
     aliyun_log_napi_utils.c
     aliyun_log_harmony_http_function.c
     aliyun_log_napi_callback.c
-    aliyun_log_napi.cpp
+    aliyun_log_napi.c
 )
 
 target_link_libraries(aliyunlog PUBLIC

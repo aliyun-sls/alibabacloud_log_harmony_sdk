@@ -14,7 +14,7 @@ import {
 class AliyunLog {
   private token: number;
 
-  constructor(endpoint: string, project: string, logstore: string, accessKeyId: string, accessKeySecret: string, accessKeyToken: string = null) {
+  constructor(endpoint: string, project: string, logstore: string, accessKeyId: string, accessKeySecret: string, accessKeyToken?: string) {
     this.token = createInstance(endpoint, project, logstore, accessKeyId, accessKeySecret, accessKeyToken);
   }
 
@@ -45,7 +45,7 @@ class AliyunLog {
     setCallback(callback);
   }
 
-  setAccessKey(id: string, secret: string, token: string = null) {
+  setAccessKey(id: string, secret: string, token?: string) {
     setAK(this.token, id, secret, token);
   }
 
