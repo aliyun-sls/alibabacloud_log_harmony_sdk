@@ -1,4 +1,8 @@
 ## 0.3.3
+### Fixes
+* Removed armv7a support
+* Removed libc++_shared.so dependencies
+
 ## 0.3.3-beta.1
 ### Fixes
 * Removed armv7a support
